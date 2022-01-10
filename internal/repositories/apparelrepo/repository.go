@@ -60,6 +60,7 @@ func createTable(db *sql.DB) error {
 		CONSTRAINT fk_apparel_type
 			FOREIGN KEY(apparel_type_id)
 				REFERENCES apparel_type(apparel_type_id)
+		
 	)`
 
 	if _, err = db.Exec(apparelQry); err != nil {
@@ -68,7 +69,7 @@ func createTable(db *sql.DB) error {
 	}
 
 	const apparelImgQry = `CREATE TABLE IF NOT EXISTS apparel_image (
-		apparel_id						varchar(200) NOT NULL,
+		apparel_id						varchar(200) NOT NULL REFERENCES apparel ON DELETE CASCADE,
 		apparel_image_url				varchar(200) NOT NULL,
 		create_date 					timestamp NOT NULL DEFAULT NOW(),
 		update_date 					timestamp,
@@ -100,10 +101,6 @@ func (r *Repository) CreateApparel(ctx context.Context, ApparelID string, in *do
 	if err != nil {
 		return nil, err
 	}
-	filePaths, err := r.GCPBucket.UploadFile(in.ApparelTypeID, ApparelID, in.Files)
-	if err != nil {
-		return nil, err
-	}
 	tcStmt := table.Apparel.
 		INSERT(
 			table.Apparel.AllColumns,
@@ -118,6 +115,10 @@ func (r *Repository) CreateApparel(ctx context.Context, ApparelID string, in *do
 	})
 	if _, err := tcStmt.Exec(tx); err != nil {
 		tx.Rollback()
+		return nil, err
+	}
+	filePaths, err := r.GCPBucket.UploadFile(in.ApparelTypeID, ApparelID, in.Files)
+	if err != nil {
 		return nil, err
 	}
 	for _, p := range filePaths {
@@ -218,11 +219,13 @@ func (r *Repository) DeleteApparelByApparelID(ctx context.Context, in *domain.De
 	}
 	stmt := table.Apparel.
 		DELETE().
-		WHERE(table.Apparel.ApparelID.EQ(postgres.String(in.ApparelID)))
-	if _, err := stmt.Exec(tx); err != nil {
-		tx.Rollback()
+		WHERE(table.Apparel.ApparelID.EQ(postgres.String(in.ApparelID))).
+		RETURNING(table.Apparel.ApparelTypeID)
+	var apparel model.Apparel
+	if err := stmt.Query(tx, &apparel); err != nil {
 		return nil, err
 	}
+	r.GCPBucket.DeleteFolder(apparel.ApparelTypeID, in.ApparelID)
 	if err := tx.Commit(); err != nil {
 		return nil, err
 	}

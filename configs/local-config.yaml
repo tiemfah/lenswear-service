@@ -13,4 +13,4 @@ database:
     sslMode: false
 gcp:
   serviceAccount: ./cert/service_account/service_account.json
-  projectID: lenswear
+  projectID: lenswear-service

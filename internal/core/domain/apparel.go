@@ -31,7 +31,7 @@ type CreateApparelReq struct {
 
 func (r CreateApparelReq) Validate() error {
 	return validation.ValidateStruct(&r,
-		validation.Field(&r.ApparelTypeID, validation.Required, validation.In(ApparelTypeIDs)),
+		validation.Field(&r.ApparelTypeID, validation.Required),
 		validation.Field(&r.Name, validation.Required),
 		validation.Field(&r.Brand, validation.Required),
 		validation.Field(&r.Price, validation.Required),

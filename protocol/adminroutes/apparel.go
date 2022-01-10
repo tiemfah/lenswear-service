@@ -10,6 +10,6 @@ func ApparelEndPoint(router fiber.Router, hdl *apparelhdl.HTTPHandler) {
 	{
 		endpoints.Post("", hdl.CreateApparel)
 		endpoints.Get("", hdl.GetApparels)
-		endpoints.Delete("", hdl.DeleteApparelByApparelID)
+		endpoints.Delete(":apparelID", hdl.DeleteApparelByApparelID)
 	}
 }

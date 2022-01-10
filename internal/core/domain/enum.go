@@ -8,12 +8,3 @@ var (
 	ApprelTypeTSkirtID  = "skirt"
 	ApprelTypeTDressID  = "dress"
 )
-
-var ApparelTypeIDs = []string{
-	ApprelTypeShirtID,
-	ApprelTypeTShirtID,
-	ApprelTypeTPantsID,
-	ApprelTypeTShortsID,
-	ApprelTypeTSkirtID,
-	ApprelTypeTDressID,
-}

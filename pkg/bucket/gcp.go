@@ -31,8 +31,8 @@ func NewGCPBucket(ctx context.Context, client *storage.Client, projectID string)
 }
 
 func (g *GCPBucket) UploadFile(bucketName, folderName string, form *multipart.Form) ([]string, error) {
-	filepaths := []string{}
-	bucket := g.client.Bucket(g.projectID + bucketName)
+	resFilePaths := []string{}
+	bucket := g.client.Bucket(g.projectID + "-" + bucketName)
 	for i, mf := range form.File["images"] {
 		filePath := folderName + "/" + strconv.Itoa(i) + ".jpg"
 		writer := bucket.Object(filePath).NewWriter(g.ctx)
@@ -49,8 +49,9 @@ func (g *GCPBucket) UploadFile(bucketName, folderName string, form *multipart.Fo
 		if err := file.Close(); err != nil {
 			return nil, fmt.Errorf("file.Close: %v", err)
 		}
+		resFilePaths = append(resFilePaths, filePath)
 	}
-	trainBucket := g.client.Bucket(bucketName + "-train")
+	trainBucket := g.client.Bucket(g.projectID + "-" + bucketName + "-train")
 	for i, mf := range form.File["train_images"] {
 		filePath := folderName + "/" + strconv.Itoa(i) + ".jpg"
 		writer := trainBucket.Object(filePath).NewWriter(g.ctx)
@@ -68,11 +69,11 @@ func (g *GCPBucket) UploadFile(bucketName, folderName string, form *multipart.Fo
 			return nil, fmt.Errorf("file.Close: %v", err)
 		}
 	}
-	return filepaths, nil
+	return resFilePaths, nil
 }
 
 func (g *GCPBucket) DeleteFolder(bucketName, folderName string) error {
-	bucket := g.client.Bucket(bucketName)
+	bucket := g.client.Bucket(g.projectID + "-" + bucketName)
 	it := bucket.Objects(g.ctx, &storage.Query{Prefix: folderName})
 	for {
 		objAttrs, err := it.Next()
@@ -86,7 +87,7 @@ func (g *GCPBucket) DeleteFolder(bucketName, folderName string) error {
 			return err
 		}
 	}
-	trainBucket := g.client.Bucket(bucketName + "-train")
+	trainBucket := g.client.Bucket(g.projectID + "-" + bucketName + "-train")
 	trainIt := trainBucket.Objects(g.ctx, &storage.Query{Prefix: folderName})
 	for {
 		objAttrs, err := trainIt.Next()

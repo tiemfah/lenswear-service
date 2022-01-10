@@ -89,13 +89,12 @@ func (h *HTTPHandler) GetApparelByApparelID(c *fiber.Ctx) error {
 
 func (h *HTTPHandler) DeleteApparelByApparelID(c *fiber.Ctx) error {
 	user := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
-	in := new(domain.DeleteApparelByApparelIDReq)
-	in.Requester = &domain.Requester{
-		UserID:   user["UserID"].(string),
-		UserRole: user["UserRole"].(string),
-	}
-	if err := c.BodyParser(in); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	in := &domain.DeleteApparelByApparelIDReq{
+		Requester: &domain.Requester{
+			UserID:   user["UserID"].(string),
+			UserRole: user["UserRole"].(string),
+		},
+		ApparelID: c.Params("apparelID", ""),
 	}
 	if err := in.Validate(); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
