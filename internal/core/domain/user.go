@@ -17,14 +17,12 @@ type CreateUserReq struct {
 	Requester *Requester
 	Username  string `json:"username"`
 	Password  string `json:"password"`
-	AreaID    string `json:"areaID"`
 }
 
 func (r CreateUserReq) Validate() error {
 	return validation.ValidateStruct(&r,
 		validation.Field(&r.Username, validation.Required),
 		validation.Field(&r.Password, validation.Required),
-		validation.Field(&r.AreaID, validation.Required),
 	)
 }
 
@@ -49,14 +47,12 @@ type GetUserByUserIDReq struct {
 type ModifyUserReq struct {
 	Requester *Requester
 	Username  string `json:"username"`
-	AreaID    string `json:"areaID"`
 }
 
 func (r ModifyUserReq) Validate() error {
 	return validation.ValidateStruct(&r,
 		validation.Field(&r.Requester, validation.Required),
 		validation.Field(&r.Username, validation.Required),
-		validation.Field(&r.AreaID, validation.Required),
 	)
 }
 
