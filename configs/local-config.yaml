@@ -1,0 +1,16 @@
+env: local
+httpport: 8080
+keypath:
+  publicKey: ./cert/public/public.pem
+  privateKey: ./cert/private/private.pem
+database:
+  postgresDB:
+    host: 127.0.0.1
+    port: 5432
+    username: postgres
+    password: postgres
+    dbName: lenswear
+    sslMode: false
+gcp:
+  serviceAccount: ./cert/service_account/service_account.json
+  projectID: lenswear

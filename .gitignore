@@ -1,0 +1,3 @@
+cert/private/private.pem
+cert/public/public.pem
+cert/service_account/service_account.json

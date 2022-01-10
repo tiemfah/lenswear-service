@@ -1,0 +1,23 @@
+version: "3"
+
+networks:
+  lenswear-network:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:13.3-alpine
+    container_name: lenswear-postgresq
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      TZ: "GMT+7"
+      PGTZ: "Asia/Bangkok"
+    networks:
+      - lenswear-network
