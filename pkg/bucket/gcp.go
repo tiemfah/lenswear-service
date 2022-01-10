@@ -51,7 +51,7 @@ func (g *GCPBucket) UploadFile(bucketName, folderName string, form *multipart.Fo
 		}
 	}
 	trainBucket := g.client.Bucket(bucketName + "-train")
-	for i, mf := range form.File["test_images"] {
+	for i, mf := range form.File["train_images"] {
 		filePath := folderName + "/" + strconv.Itoa(i) + ".jpg"
 		writer := trainBucket.Object(filePath).NewWriter(g.ctx)
 		file, err := mf.Open()
