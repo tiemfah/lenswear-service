@@ -36,19 +36,12 @@ require github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 require (
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/golang-plus/uuid v1.0.0
-	github.com/lib/pq v1.10.4
 )
 
 require (
-	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/go-jet/jet/v2 v2.6.0
 	github.com/golang-jwt/jwt/v4 v4.0.0
 	github.com/golang-plus/errors v1.0.0 // indirect
-	github.com/google/uuid v1.1.2 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/stretchr/testify v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
 
 require (

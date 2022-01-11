@@ -6,3 +6,6 @@ rsa-gen-key:
 
 run-server:
 	go run cmd/api/main.go -env=local
+
+docker-build:
+	docker build -t lenswear-service:latest ./build
