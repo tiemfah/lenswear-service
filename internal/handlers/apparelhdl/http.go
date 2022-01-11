@@ -59,9 +59,6 @@ func (h *HTTPHandler) GetApparels(c *fiber.Ctx) error {
 	in := new(domain.GetApparelsReq)
 	in.Limit = limit
 	in.Offset = offset
-	if err := c.BodyParser(in); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-	}
 	if err := in.Validate(); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -73,9 +70,8 @@ func (h *HTTPHandler) GetApparels(c *fiber.Ctx) error {
 }
 
 func (h *HTTPHandler) GetApparelByApparelID(c *fiber.Ctx) error {
-	in := new(domain.GetApparelByApparelIDReq)
-	if err := c.BodyParser(in); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	in := &domain.GetApparelByApparelIDReq{
+		ApparelID: c.Params("apparelID", ""),
 	}
 	if err := in.Validate(); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
@@ -95,6 +91,9 @@ func (h *HTTPHandler) DeleteApparelByApparelID(c *fiber.Ctx) error {
 			UserRole: user["UserRole"].(string),
 		},
 		ApparelID: c.Params("apparelID", ""),
+	}
+	if err := c.BodyParser(in); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 	if err := in.Validate(); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})

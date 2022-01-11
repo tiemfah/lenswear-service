@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"cloud.google.com/go/datastore"
 	"cloud.google.com/go/storage"
 	"github.com/gofiber/fiber/v2"
 	"github.com/tiemfah/lenswear-service/configs"
@@ -19,7 +20,6 @@ import (
 	"github.com/tiemfah/lenswear-service/internal/repositories/authrepo"
 	"github.com/tiemfah/lenswear-service/internal/repositories/userrepo"
 	"github.com/tiemfah/lenswear-service/pkg/bucket"
-	"github.com/tiemfah/lenswear-service/pkg/database/postgres"
 	"github.com/tiemfah/lenswear-service/pkg/hash"
 	"github.com/tiemfah/lenswear-service/pkg/middlewares"
 	ttjwt "github.com/tiemfah/lenswear-service/pkg/token/jwt"
@@ -40,23 +40,18 @@ func ServeHTTP() error {
 	flag.Parse()
 	configs.InitViper("./configs", cfg.Env)
 
-	conn, err := postgres.ConnectPostgresSQL(
-		configs.GetViper().Database.PostgresDB.Host,
-		configs.GetViper().Database.PostgresDB.Port,
-		configs.GetViper().Database.PostgresDB.Username,
-		configs.GetViper().Database.PostgresDB.Password,
-		configs.GetViper().Database.PostgresDB.DbName,
-		configs.GetViper().Database.PostgresDB.SSLMode,
-	)
+	dsClient, err := datastore.NewClient(ctx, configs.GetViper().GCP.ProjectID, option.WithCredentialsFile(configs.GetViper().GCP.ServiceAccount))
 	if err != nil {
-		return fmt.Errorf("cannot connect to the master postgres database: '%s'", err)
+		return fmt.Errorf("cannot connect to the datastore client: '%s'", err)
 	}
+	defer dsClient.Close()
 
-	client, err := storage.NewClient(ctx, option.WithCredentialsFile(configs.GetViper().GCP.ServiceAccount))
+	csClient, err := storage.NewClient(ctx, option.WithCredentialsFile(configs.GetViper().GCP.ServiceAccount))
 	if err != nil {
-		return fmt.Errorf("cannot connect to the gcp client: '%s'", err)
+		return fmt.Errorf("cannot connect to the cloud storage client: '%s'", err)
 	}
-	gcpBucket := bucket.NewGCPBucket(ctx, client, configs.GetViper().GCP.ProjectID)
+	defer csClient.Close()
+	gcpBucket := bucket.NewGCPBucket(ctx, csClient, configs.GetViper().GCP.ProjectID)
 
 	uidgen := uidgen.New()
 	hash := hash.New()
@@ -64,8 +59,8 @@ func ServeHTTP() error {
 	privateKey, publicKey := rsa.GenerateRSA(configs.GetViper().KeyPath.PublicKey, configs.GetViper().KeyPath.PrivateKey)
 
 	authRepository := authrepo.NewAuthenticationRepository(ttjwt.New(privateKey, publicKey))
-	userRepository := userrepo.NewUserRepository(conn.Postgres, hash)
-	apparelRepository := apparelrepo.NewApprelRepository(conn.Postgres, gcpBucket)
+	userRepository := userrepo.NewUserRepository(dsClient, hash)
+	apparelRepository := apparelrepo.NewApprelRepository(dsClient, gcpBucket)
 
 	authService := authsrv.NewAuthenticationService(authRepository, userRepository)
 	userService := usersrv.NewUserService(userRepository, uidgen, hash)

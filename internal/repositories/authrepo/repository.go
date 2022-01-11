@@ -13,7 +13,7 @@ const (
 	issuer                         = "transformer-tracker-authentication-service"
 	accessToken                    = "accessToken"
 	refreshToken                   = "refreshToken"
-	accessTokenExpireTimeInMinute  = 5
+	accessTokenExpireTimeInMinute  = 60
 	refreshTokenExpireTimeInMinute = 60
 )
 

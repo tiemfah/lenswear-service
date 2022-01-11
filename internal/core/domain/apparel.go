@@ -2,17 +2,20 @@ package domain
 
 import (
 	"mime/multipart"
+	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
 type Apparel struct {
-	ApparelID string   `json:"apparelID"`
-	Name      string   `json:"name"`
-	Brand     string   `json:"brand"`
-	Price     string   `json:"price"`
-	StoreURL  string   `json:"storeURL"`
-	ImgURLs   []string `json:"imageURLs"`
+	ApparelTypeID string    `json:"apparelTypeID"`
+	Name          string    `json:"name"`
+	Brand         string    `json:"brand"`
+	Price         string    `json:"price"`
+	StoreURL      string    `json:"storeURL"`
+	ImgURLs       []string  `json:"imageURLs"`
+	CreateDate    time.Time `json:"createDate"`
+	CreateBy      string    `json:"createBy"`
 }
 
 type Apparels struct {
@@ -55,8 +58,9 @@ func (r GetApparelsAsAdminReq) Validate() error {
 }
 
 type GetApparelsReq struct {
-	Limit  int64
-	Offset int64
+	Limit         int64
+	Offset        int64
+	ApparelTypeID string
 }
 
 func (r GetApparelsReq) Validate() error {
@@ -67,7 +71,8 @@ func (r GetApparelsReq) Validate() error {
 }
 
 type GetApparelByApparelIDReq struct {
-	ApparelID string `json:"ApparelID"`
+	ApparelID     string
+	ApparelTypeID string `json:"apparelTypeID"`
 }
 
 func (r GetApparelByApparelIDReq) Validate() error {
@@ -77,8 +82,9 @@ func (r GetApparelByApparelIDReq) Validate() error {
 }
 
 type DeleteApparelByApparelIDReq struct {
-	Requester *Requester
-	ApparelID string
+	Requester     *Requester
+	ApparelID     string
+	ApparelTypeID string `json:"apparelTypeID"`
 }
 
 func (r DeleteApparelByApparelIDReq) Validate() error {

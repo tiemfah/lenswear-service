@@ -11,24 +11,12 @@ type Config struct {
 	Env      string
 	HTTPPort string
 	KeyPath
-	Database
 	GCP
 }
 
 type KeyPath struct {
 	PublicKey  string
 	PrivateKey string
-}
-
-type Database struct {
-	PostgresDB struct {
-		Host     string
-		Port     string
-		Username string
-		Password string
-		DbName   string
-		SSLMode  bool
-	}
 }
 
 type GCP struct {

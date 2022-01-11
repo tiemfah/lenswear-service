@@ -6,7 +6,13 @@ type User struct {
 	UserID     string `json:"userID"`
 	UserRoleID string `json:"userRoleID"`
 	Username   string `json:"username"`
-	AreaID     string `json:"areaID"`
+}
+
+type UserWithPassword struct {
+	UserID     string `json:"userID"`
+	UserRoleID string `json:"userRoleID"`
+	Username   string `json:"username"`
+	Password   string `json:"password"`
 }
 
 type Users struct {

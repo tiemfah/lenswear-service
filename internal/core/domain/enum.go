@@ -8,3 +8,8 @@ var (
 	ApprelTypeTSkirtID  = "skirt"
 	ApprelTypeTDressID  = "dress"
 )
+
+var (
+	UserDataStoreKey   = "User"
+	ApprelDataStoreKey = "Apparel"
+)
