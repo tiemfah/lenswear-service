@@ -18,7 +18,7 @@ type UserRepository interface {
 	ModifyUser(ctx context.Context, in *domain.ModifyUserReq) (*domain.EmptyRes, error)
 	ResetUserPassword(ctx context.Context, in *domain.ResetUserPasswordReq) (*domain.EmptyRes, error)
 	// helpers
-	CheckUserIsValidPassword(ctx context.Context, in *domain.CheckUserIsValidPasswordReq) (bool, error)
+	CheckUserIsValidPassword(ctx context.Context, in *domain.CheckUserIsValidPasswordReq) (*domain.User, error)
 }
 
 type ApparelRepository interface {

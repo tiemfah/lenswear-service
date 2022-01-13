@@ -1,12 +1,12 @@
 package domain
 
 var (
-	ApprelTypeShirtID   = "shirt"
-	ApprelTypeTShirtID  = "tshirt"
-	ApprelTypeTPantsID  = "pants"
-	ApprelTypeTShortsID = "shorts"
-	ApprelTypeTSkirtID  = "skirt"
-	ApprelTypeTDressID  = "dress"
+	ApparelTypeShirtID  = "shirt"
+	ApparelTypeTShirtID = "tshirt"
+	ApparelTypePantsID  = "pants"
+	ApparelTypeShortsID = "shorts"
+	ApparelTypeSkirtID  = "skirt"
+	ApparelTypeDressID  = "dress"
 )
 
 var (

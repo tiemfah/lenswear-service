@@ -97,7 +97,7 @@ func (g *GCPBucket) DeleteFolder(bucketName, folderName string) error {
 		if err == iterator.Done {
 			break
 		}
-		if err := bucket.Object(objAttrs.Name).Delete(g.ctx); err != nil {
+		if err := trainBucket.Object(objAttrs.Name).Delete(g.ctx); err != nil {
 			return err
 		}
 	}

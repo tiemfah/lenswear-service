@@ -67,7 +67,7 @@ func (r *Repository) ResetUserPassword(ctx context.Context, in *domain.ResetUser
 	return &domain.EmptyRes{}, nil
 }
 
-func (r *Repository) CheckUserIsValidPassword(ctx context.Context, in *domain.CheckUserIsValidPasswordReq) (bool, error) {
+func (r *Repository) CheckUserIsValidPassword(ctx context.Context, in *domain.CheckUserIsValidPasswordReq) (*domain.User, error) {
 	query := datastore.NewQuery(domain.UserDataStoreKey).Filter("Username =", in.Username).Limit(1)
 	it := r.DS.Run(ctx, query)
 	var user domain.UserWithPassword
@@ -77,12 +77,19 @@ func (r *Repository) CheckUserIsValidPassword(ctx context.Context, in *domain.Ch
 			break
 		}
 		if err != nil {
-			return false, err
+			return nil, err
 		}
 	}
 	isValid, err := r.hash.ComparePassword(in.Password, user.Password)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
-	return isValid, nil
+	if isValid {
+		return &domain.User{
+			UserID:     user.UserID,
+			UserRoleID: user.UserRoleID,
+			Username:   user.Username,
+		}, nil
+	}
+	return nil, nil
 }
