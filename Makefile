@@ -8,4 +8,9 @@ run-server:
 	go run cmd/api/main.go -env=local
 
 docker-build:
-	docker build -t lenswear-service:latest ./build
+	mv build/Dockerfile Dockerfile
+	docker build -t lenswear-service:latest .
+	mv Dockerfile build/Dockerfile
+
+docker-push:
+	docker push asia-southeast1-docker.pkg.dev/lenswear-service/app/lenswear-service:latest
