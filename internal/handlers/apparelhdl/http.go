@@ -56,9 +56,12 @@ func (h *HTTPHandler) GetApparels(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
-	in := new(domain.GetApparelsReq)
-	in.Limit = limit
-	in.Offset = offset
+	apparelTypeID := c.Query("apparelTypeID", "")
+	in := &domain.GetApparelsReq{
+		Limit:         limit,
+		Offset:        offset,
+		ApparelTypeID: apparelTypeID,
+	}
 	if err := in.Validate(); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}

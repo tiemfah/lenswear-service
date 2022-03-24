@@ -8,6 +8,7 @@ import (
 )
 
 type Apparel struct {
+	ApparelID     string    `json:"apparelID"`
 	ApparelTypeID string    `json:"apparelTypeID"`
 	Name          string    `json:"name"`
 	Brand         string    `json:"brand"`

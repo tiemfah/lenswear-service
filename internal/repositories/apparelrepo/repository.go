@@ -67,13 +67,14 @@ func (r *Repository) GetApparels(ctx context.Context, in *domain.GetApparelsReq)
 	it := r.DS.Run(ctx, query)
 	for {
 		var apparel domain.Apparel
-		_, err := it.Next(&apparel)
+		key, err := it.Next(&apparel)
 		if err == iterator.Done {
 			break
 		}
 		if err != nil {
 			return nil, err
 		}
+		apparel.ApparelID = key.Name
 		res.Apparels = append(res.Apparels, &apparel)
 	}
 	return res, nil
